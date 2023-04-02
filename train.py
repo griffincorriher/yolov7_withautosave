@@ -35,6 +35,8 @@ from utils.plots import plot_images, plot_labels, plot_results, plot_evolution
 from utils.torch_utils import ModelEMA, select_device, intersect_dicts, torch_distributed_zero_first, is_parallel
 from utils.wandb_logging.wandb_utils import WandbLogger, check_wandb_resume
 
+import shutil
+
 logger = logging.getLogger(__name__)
 
 
@@ -462,6 +464,7 @@ def train(hyp, opt, device, tb_writer=None):
 
                 # Save last, best and delete
                 torch.save(ckpt, last)
+                shutil.copy("/content/yolov7/runs/train/yolov7/weights/last.pt", "/content/drive/MyDrive/6156/check")
                 if best_fitness == fi:
                     torch.save(ckpt, best)
                 if (best_fitness == fi) and (epoch >= 200):
@@ -476,6 +479,7 @@ def train(hyp, opt, device, tb_writer=None):
                     if ((epoch + 1) % opt.save_period == 0 and not final_epoch) and opt.save_period != -1:
                         wandb_logger.log_model(
                             last.parent, opt, epoch, fi, best_model=best_fitness == fi)
+                shutil.copy("/content/yolov7/runs/train/yolov7/weights/best.pt", "/content/drive/MyDrive/6156/check")
                 del ckpt
 
         # end epoch ----------------------------------------------------------------------------------------------------
